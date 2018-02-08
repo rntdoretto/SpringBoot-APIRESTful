@@ -27,7 +27,7 @@ public class Lancamento implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long idLancamento;
+	private Long id;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "data", nullable = false)
@@ -55,12 +55,12 @@ public class Lancamento implements Serializable {
 	public Lancamento() {
 	}
 
-	public Long getIdLancamento() {
-		return idLancamento;
+	public Long getId() {
+		return id;
 	}
 
-	public void setIdLancamento(Long idLancamento) {
-		this.idLancamento = idLancamento;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public Date getData() {
@@ -133,7 +133,7 @@ public class Lancamento implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Lancamento [idLancamento=" + idLancamento + ", data=" + data + ", descricao=" + descricao
+		return "Lancamento [idLancamento=" + id + ", data=" + data + ", descricao=" + descricao
 				+ ", localizacao=" + localizacao + ", dataCriacao=" + dataCriacao + ", dataAtualizacao="
 				+ dataAtualizacao + ", tipo=" + tipo + ", funcionario=" + funcionario + "]";
 	}

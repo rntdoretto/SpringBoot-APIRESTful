@@ -24,7 +24,7 @@ public class Empresa implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long idEmpresa;
+	private Long id;
 	
 	@Column(name = "razaoSocial", nullable = false)
 	private String razaoSocial;
@@ -50,11 +50,11 @@ public class Empresa implements Serializable {
 	public Empresa() {
 	}
 	
-	public Long getIdEmpresa() {
-		return idEmpresa;
+	public Long getId() {
+		return id;
 	}
-	public void setIdEmpresa(Long idEmpresa) {
-		this.idEmpresa = idEmpresa;
+	public void setId(Long id) {
+		this.id = id;
 	}
 	public String getRazaoSocial() {
 		return razaoSocial;
@@ -102,7 +102,7 @@ public class Empresa implements Serializable {
 	
 	@Override
 	public String toString() {
-		return "Empresa [idEmpresa=" + this.idEmpresa + " razaoSocial=" + this.razaoSocial + " cnpj=" + this.cnpj + " dataCriacao=" + this.dataCriacao + " dataAtualizacao=" + dataAtualizacao + "]";
+		return "Empresa [idEmpresa=" + this.id + " razaoSocial=" + this.razaoSocial + " cnpj=" + this.cnpj + " dataCriacao=" + this.dataCriacao + " dataAtualizacao=" + dataAtualizacao + "]";
 	}
 	
 }

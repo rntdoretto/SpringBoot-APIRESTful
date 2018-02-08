@@ -32,7 +32,7 @@ public class Funcionario implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long idFuncionario;
+	private Long id;
 	
 	@Column(name = "nome", nullable = false)
 	private String nome;
@@ -75,11 +75,11 @@ public class Funcionario implements Serializable {
 	}
 
 	public Long getIdFuncionario() {
-		return idFuncionario;
+		return id;
 	}
 
-	public void setIdFuncionario(Long idFuncionario) {
-		this.idFuncionario = idFuncionario;
+	public void setIdFuncionario(Long id) {
+		this.id = id;
 	}
 
 	public String getNome() {
@@ -202,7 +202,7 @@ public class Funcionario implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Funcionario [idFuncionario=" + idFuncionario + ", nome=" + nome + ", email=" + email + ", senha="
+		return "Funcionario [idFuncionario=" + id + ", nome=" + nome + ", email=" + email + ", senha="
 				+ senha + ", cpf=" + cpf + ", valorHora=" + valorHora + ", qtdHorasTrabalhoDia=" + qtdHorasTrabalhoDia
 				+ ", qtdHorasAlmoco=" + qtdHorasAlmoco + ", perfil=" + perfil + ", dataCriacao=" + dataCriacao
 				+ ", dataAtualizacao=" + dataAtualizacao + ", empresa=" + empresa + "]";
