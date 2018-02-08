@@ -74,11 +74,11 @@ public class Funcionario implements Serializable {
 	public Funcionario() {
 	}
 
-	public Long getIdFuncionario() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setIdFuncionario(Long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

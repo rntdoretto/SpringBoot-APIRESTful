@@ -33,10 +33,10 @@ public class Lancamento implements Serializable {
 	@Column(name = "data", nullable = false)
 	private Date data;
 	
-	@Column(name = "descricao", nullable = false)
+	@Column(name = "descricao")
 	private String descricao;
 	
-	@Column(name = "localizacao", nullable = false)
+	@Column(name = "localizacao")
 	private String localizacao;
 	
 	@Column(name = "dataCriacao", nullable = false)
