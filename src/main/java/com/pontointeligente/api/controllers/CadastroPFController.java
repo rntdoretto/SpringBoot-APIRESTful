@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pontointeligente.api.dtos.CadastroPFDTO;
-import com.pontointeligente.api.dtos.CadastroPJDTO;
 import com.pontointeligente.api.entities.Empresa;
 import com.pontointeligente.api.entities.Funcionario;
 import com.pontointeligente.api.enums.PerfilEnum;
@@ -68,7 +67,7 @@ public class CadastroPFController {
 	
 	/**
 	 * Verifica se a empresa ou funcinário já existem na base de dados.
-	 * @param cadastroPJDto
+	 * @param cadastroPFDto
 	 * @param result
 	 */
 	private void validarDadosExistentes(CadastroPFDTO cadastroPFDto, BindingResult result) {
@@ -81,7 +80,7 @@ public class CadastroPFController {
 	}
 	
 	/**
-	 * DataBinding de CadastroPJDTO com Funcionario
+	 * DataBinding de CadastroPFDTO com Funcionario
 	 * @param cadastroPFDto
 	 * @return Funcionario
 	 */
