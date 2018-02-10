@@ -71,8 +71,6 @@ public class CadastroPFController {
 	 * @param result
 	 */
 	private void validarDadosExistentes(CadastroPFDTO cadastroPFDto, BindingResult result) {
-		this.empresaService.buscarPorCnpj(cadastroPFDto.getCnpj())
-			.ifPresent(emp -> result.addError(new ObjectError("empresa", "Empresa já existente.")));
 		this.funcionarioService.buscarPorCpf(cadastroPFDto.getCpf())
 			.ifPresent(func -> result.addError(new ObjectError("funcionario", "CPF já existe.")));
 		this.funcionarioService.buscarPorEmail(cadastroPFDto.getEmail())
