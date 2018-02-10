@@ -143,6 +143,11 @@ public class Funcionario implements Serializable {
 	public Float getQtdHorasAlmoco() {
 		return qtdHorasAlmoco;
 	}
+	
+	@Transient
+	public Optional<Float> getQtdHorasAlmocoOpt(){
+		return Optional.ofNullable(this.qtdHorasAlmoco);
+	}
 
 	public void setQtdHorasAlmoco(Float qtdHorasAlmoco) {
 		this.qtdHorasAlmoco = qtdHorasAlmoco;

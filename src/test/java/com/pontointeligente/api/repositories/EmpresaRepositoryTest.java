@@ -39,7 +39,6 @@ public class EmpresaRepositoryTest {
 	@Test
 	public void testBuscarPorCnpj() {
 		Empresa empresa = this.empresaRepo.findByCnpj(CNPJ);
-		
 		assertEquals(CNPJ, empresa.getCnpj());
 	}
 
