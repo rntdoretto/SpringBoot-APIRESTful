@@ -61,6 +61,7 @@ public class CadastroPFController {
 		Optional<Empresa> empresa = this.empresaService.buscarPorCnpj(cadastroPFDto.getCnpj());
 		empresa.ifPresent(emp -> funcionario.setEmpresa(emp));
 		this.funcionarioService.persistir(funcionario);
+		
 		response.setData(this.dataBindingFuncionarioParaDto(funcionario));
 		return ResponseEntity.ok(response);
 	}
@@ -90,11 +91,11 @@ public class CadastroPFController {
 		funcionario.setPerfil(PerfilEnum.ROLE_USUARIO);
 		funcionario.setSenha(PasswordUtils.gerarBCrypt(cadastroPFDto.getSenha()));
 		cadastroPFDto.getQtdhorasAlmoco()
-			.ifPresent(qtdHorasAlmoco -> funcionario.setQtdHorasAlmoco(Float.valueOf(qtdHorasAlmoco)));
+				.ifPresent(qtdHorasAlmoco -> funcionario.setQtdHorasAlmoco(Float.valueOf(qtdHorasAlmoco)));
 		cadastroPFDto.getQtdhorasAlmoco()
-			.ifPresent(qtdHorasTrabalhoDia -> funcionario.setQtdHorasTrabalhoDia(Float.valueOf(qtdHorasTrabalhoDia)));
+				.ifPresent(qtdHorasTrabalhoDia -> funcionario.setQtdHorasTrabalhoDia(Float.valueOf(qtdHorasTrabalhoDia)));
 		cadastroPFDto.getQtdhorasAlmoco()
-			.ifPresent(valorHora -> funcionario.setValorHora(new BigDecimal(valorHora)));
+				.ifPresent(valorHora -> funcionario.setValorHora(new BigDecimal(valorHora)));
 		
 		return funcionario;
 	}
