@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 
 import com.pontointeligente.api.entities.Empresa;
 import com.pontointeligente.api.repositories.EmpresaRepository;
-import com.pontointeligente.api.services.IEmpresaService;
+import com.pontointeligente.api.services.EmpresaService;
 
 @Service
-public class EmpresaService implements IEmpresaService {
+public class EmpresaServiceImpl implements EmpresaService {
 
-	private static final Logger log = LoggerFactory.getLogger(EmpresaService.class);
+	private static final Logger log = LoggerFactory.getLogger(EmpresaServiceImpl.class);
 	
 	@Autowired
 	private EmpresaRepository empresaRepo;

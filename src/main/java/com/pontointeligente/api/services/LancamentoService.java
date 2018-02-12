@@ -7,7 +7,7 @@ import org.springframework.data.domain.PageRequest;
 
 import com.pontointeligente.api.entities.Lancamento;
 
-public interface ILancamentoService {
+public interface LancamentoService {
 
 	/**
 	 * Retorna uma lista paginada de lançamentos através de um funcionário.

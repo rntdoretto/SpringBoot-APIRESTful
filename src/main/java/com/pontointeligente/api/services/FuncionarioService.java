@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import com.pontointeligente.api.entities.Funcionario;
 
-public interface IFuncionarioService {
+public interface FuncionarioService {
 	
 	/**
 	 *  Cadastra novo funcionario na base de dados.

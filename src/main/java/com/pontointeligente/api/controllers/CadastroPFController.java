@@ -23,8 +23,8 @@ import com.pontointeligente.api.entities.Empresa;
 import com.pontointeligente.api.entities.Funcionario;
 import com.pontointeligente.api.enums.PerfilEnum;
 import com.pontointeligente.api.response.Response;
-import com.pontointeligente.api.servicesimpl.EmpresaService;
-import com.pontointeligente.api.servicesimpl.FuncionarioService;
+import com.pontointeligente.api.servicesimpl.EmpresaServiceImpl;
+import com.pontointeligente.api.servicesimpl.FuncionarioServiceImpl;
 import com.pontointeligente.api.utils.PasswordUtils;
 
 @RestController
@@ -35,10 +35,10 @@ public class CadastroPFController {
 	private static final Logger log = LoggerFactory.getLogger(CadastroPFController.class);
 	
 	@Autowired
-	private FuncionarioService funcionarioService;
+	private FuncionarioServiceImpl funcionarioService;
 	
 	@Autowired
-	private EmpresaService empresaService;
+	private EmpresaServiceImpl empresaService;
 	
 	public CadastroPFController() {
 	}

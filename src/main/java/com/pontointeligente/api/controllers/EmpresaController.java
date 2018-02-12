@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pontointeligente.api.dtos.EmpresaDTO;
 import com.pontointeligente.api.entities.Empresa;
 import com.pontointeligente.api.response.Response;
-import com.pontointeligente.api.servicesimpl.EmpresaService;
+import com.pontointeligente.api.servicesimpl.EmpresaServiceImpl;
 
 @RestController
 @RequestMapping("/api/empresas")
@@ -25,7 +25,7 @@ public class EmpresaController {
 	private static final Logger log = LoggerFactory.getLogger(EmpresaController.class);
 	
 	@Autowired
-	private EmpresaService empresaService;
+	private EmpresaServiceImpl empresaService;
 	
 	public EmpresaController() {
 	}

@@ -18,7 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.pontointeligente.api.entities.Empresa;
 import com.pontointeligente.api.repositories.EmpresaRepository;
-import com.pontointeligente.api.servicesimpl.EmpresaService;
+import com.pontointeligente.api.servicesimpl.EmpresaServiceImpl;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -29,7 +29,7 @@ public class EmpresaServiceTest {
 	private EmpresaRepository empresaRepo;
 	
 	@Autowired
-	private IEmpresaService empresaService;
+	private EmpresaService empresaService;
 	
 	private static final String CNPJ = "51463645000100";
 	

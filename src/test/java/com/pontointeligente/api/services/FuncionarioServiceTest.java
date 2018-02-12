@@ -18,7 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.pontointeligente.api.entities.Funcionario;
 import com.pontointeligente.api.repositories.FuncionarioRepository;
-import com.pontointeligente.api.servicesimpl.FuncionarioService;
+import com.pontointeligente.api.servicesimpl.FuncionarioServiceImpl;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -29,7 +29,7 @@ public class FuncionarioServiceTest {
 	private FuncionarioRepository funcionarioRepo;
 	
 	@Autowired
-	private FuncionarioService funcionarioService;
+	private FuncionarioServiceImpl funcionarioService;
 	
 	@Before
 	public void setUp() throws Exception {

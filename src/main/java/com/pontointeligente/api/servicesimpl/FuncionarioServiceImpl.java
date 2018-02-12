@@ -1,9 +1,7 @@
 package com.pontointeligente.api.servicesimpl;
 
-import java.util.List;
 import java.util.Optional;
 
-import org.hibernate.annotations.Where;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +9,10 @@ import org.springframework.stereotype.Service;
 
 import com.pontointeligente.api.entities.Funcionario;
 import com.pontointeligente.api.repositories.FuncionarioRepository;
-import com.pontointeligente.api.services.IFuncionarioService;
+import com.pontointeligente.api.services.FuncionarioService;
 
 @Service
-public class FuncionarioService implements IFuncionarioService{
+public class FuncionarioServiceImpl implements FuncionarioService{
 
 	private static final Logger log = LoggerFactory.getLogger(Funcionario.class);
 	

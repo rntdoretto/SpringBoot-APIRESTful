@@ -11,10 +11,10 @@ import org.springframework.stereotype.Service;
 
 import com.pontointeligente.api.entities.Lancamento;
 import com.pontointeligente.api.repositories.LancamentoRepository;
-import com.pontointeligente.api.services.ILancamentoService;
+import com.pontointeligente.api.services.LancamentoService;
 
 @Service
-public class LancamentoService implements ILancamentoService {
+public class LancamentoServiceImpl implements LancamentoService {
 
 	private static final Logger log = LoggerFactory.getLogger(Lancamento.class);
 	

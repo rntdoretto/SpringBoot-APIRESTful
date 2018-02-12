@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.pontointeligente.api.entities.Empresa;
-import com.pontointeligente.api.servicesimpl.EmpresaService;
+import com.pontointeligente.api.servicesimpl.EmpresaServiceImpl;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -33,7 +33,7 @@ public class EmpresaControllerTest {
 	private MockMvc mvc;
 	
 	@MockBean
-	private EmpresaService empresaService;
+	private EmpresaServiceImpl empresaService;
 	
 	private static final String BUSCAR_EMPRESA_CNPJ_URL = "/api/empresas/cnpj/";
 	private static final Long ID = Long.valueOf(1);

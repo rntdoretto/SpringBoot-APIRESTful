@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import com.pontointeligente.api.entities.Empresa;
 
-public interface IEmpresaService {
+public interface EmpresaService {
 
 	/**
 	 * Retorna uma empresa através de um CNPJ.
