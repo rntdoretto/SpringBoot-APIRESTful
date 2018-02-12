@@ -92,9 +92,9 @@ public class CadastroPFController {
 		funcionario.setSenha(PasswordUtils.gerarBCrypt(cadastroPFDto.getSenha()));
 		cadastroPFDto.getQtdhorasAlmoco()
 				.ifPresent(qtdHorasAlmoco -> funcionario.setQtdHorasAlmoco(Float.valueOf(qtdHorasAlmoco)));
-		cadastroPFDto.getQtdhorasAlmoco()
+		cadastroPFDto.getQtdHorasTrabalhaDia()
 				.ifPresent(qtdHorasTrabalhoDia -> funcionario.setQtdHorasTrabalhoDia(Float.valueOf(qtdHorasTrabalhoDia)));
-		cadastroPFDto.getQtdhorasAlmoco()
+		cadastroPFDto.getValorHora()
 				.ifPresent(valorHora -> funcionario.setValorHora(new BigDecimal(valorHora)));
 		
 		return funcionario;
