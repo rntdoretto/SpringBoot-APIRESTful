@@ -68,7 +68,7 @@ public class LancamentoControllerTest {
 				.andExpect(jsonPath("$.data.id").value(ID_LANCAMENTO))
 				.andExpect(jsonPath("$.data.tipo").value(TIPO))
 				.andExpect(jsonPath("$.data.data").value(this.dateFormat.format(DATA)))
-				.andExpect(jsonPath("$.data.funcionario").value(ID_FUNCIONARIO))
+				.andExpect(jsonPath("$.data.idFuncionario").value(ID_FUNCIONARIO))
 				.andExpect(jsonPath("$.errors").isEmpty());
 	}
 	
@@ -82,7 +82,7 @@ public class LancamentoControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.errors").value("Funcionário não encontrado: ID inexistente."))
+				.andExpect(jsonPath("$.errors").value("Funcionário não encontrado. ID inexistente."))
 				.andExpect(jsonPath("$.data").isEmpty());
 	}
 	
