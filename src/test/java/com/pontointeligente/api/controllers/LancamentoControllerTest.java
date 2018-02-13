@@ -27,8 +27,8 @@ import com.pontointeligente.api.dtos.LancamentoDTO;
 import com.pontointeligente.api.entities.Funcionario;
 import com.pontointeligente.api.entities.Lancamento;
 import com.pontointeligente.api.enums.TipoEnum;
-import com.pontointeligente.api.services.FuncionarioService;
-import com.pontointeligente.api.services.LancamentoService;
+import com.pontointeligente.api.servicesimpl.FuncionarioServiceImpl;
+import com.pontointeligente.api.servicesimpl.LancamentoServiceImpl;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -40,10 +40,10 @@ public class LancamentoControllerTest {
 	private MockMvc mvc;
 	
 	@MockBean
-	private LancamentoService lancamentoService;
+	private LancamentoServiceImpl lancamentoService;
 	
 	@MockBean
-	private FuncionarioService funcionarioService;
+	private FuncionarioServiceImpl funcionarioService;
 	
 	private static final String URL_BASE = "/api/lancamentos/";
 	private static final Long ID_FUNCIONARIO = 1L;
