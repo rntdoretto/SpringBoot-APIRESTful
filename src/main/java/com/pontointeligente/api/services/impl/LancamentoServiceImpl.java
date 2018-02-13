@@ -19,30 +19,30 @@ public class LancamentoServiceImpl implements LancamentoService {
 	private static final Logger log = LoggerFactory.getLogger(Lancamento.class);
 	
 	@Autowired
-	private LancamentoRepository lancamentoRepo;
+	private LancamentoRepository lancamentoRepository;
 			
 	@Override
 	public Page<Lancamento> buscarPorFuncionarioId(Long idFuncionario, PageRequest pageRequest) {
 		log.info("Buscando lançamentos para o funcionário ID:{}", idFuncionario);
-		return this.lancamentoRepo.findByFuncionarioId(idFuncionario, pageRequest);
+		return this.lancamentoRepository.findByFuncionarioId(idFuncionario, pageRequest);
 	}
 
 	@Override
 	public Optional<Lancamento> buscaPorId(Long id) {
 		log.info("Buscando um lançamento pelo ID:{}", id);
-		return Optional.ofNullable(this.lancamentoRepo.findOne(id));
+		return Optional.ofNullable(this.lancamentoRepository.findOne(id));
 	}
 
 	@Override
 	public Lancamento persistir(Lancamento lancamento) {
 		log.info("Persistindo o lançamento {}", lancamento);
-		return this.lancamentoRepo.save(lancamento);
+		return this.lancamentoRepository.save(lancamento);
 	}
 
 	@Override
 	public void remover(Long id) {
 		log.info("Excluindo o lançamento ID:{}", id);
-		this.lancamentoRepo.delete(id);
+		this.lancamentoRepository.delete(id);
 	}
 
 }

@@ -17,29 +17,29 @@ public class FuncionarioServiceImpl implements FuncionarioService{
 	private static final Logger log = LoggerFactory.getLogger(Funcionario.class);
 	
 	@Autowired
-	private FuncionarioRepository funcionarioRepo;
+	private FuncionarioRepository funcionarioRepository;
 
 	@Override
 	public Funcionario persistir(Funcionario funcionario) {
 		log.info("Persistindo funcionário: {}", funcionario);
-		return this.funcionarioRepo.save(funcionario);
+		return this.funcionarioRepository.save(funcionario);
 	}
 
 	@Override
 	public Optional<Funcionario> buscarPorCpf(String cpf) {
 		log.info("Buscando funcionario pelo CPF {}", cpf);
-		return Optional.ofNullable(this.funcionarioRepo.findByCpf(cpf));
+		return Optional.ofNullable(this.funcionarioRepository.findByCpf(cpf));
 	}
 
 	@Override
 	public Optional<Funcionario> buscarPorEmail(String email) {
 		log.info("Buscando funcionario pelo Email {}", email);
-		return Optional.ofNullable(this.funcionarioRepo.findByEmail(email));
+		return Optional.ofNullable(this.funcionarioRepository.findByEmail(email));
 	}
 
 	@Override
 	public Optional<Funcionario> buscarPorId(Long id) {
 		log.info("Buscando funcionario pelo ID {}", id);
-		return Optional.ofNullable(this.funcionarioRepo.findOne(id));
+		return Optional.ofNullable(this.funcionarioRepository.findOne(id));
 	}
 }
