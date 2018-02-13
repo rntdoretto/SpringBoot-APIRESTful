@@ -33,8 +33,8 @@ import com.pontointeligente.api.entities.Funcionario;
 import com.pontointeligente.api.entities.Lancamento;
 import com.pontointeligente.api.enums.TipoEnum;
 import com.pontointeligente.api.response.Response;
-import com.pontointeligente.api.servicesimpl.FuncionarioServiceImpl;
-import com.pontointeligente.api.servicesimpl.LancamentoServiceImpl;
+import com.pontointeligente.api.services.impl.FuncionarioServiceImpl;
+import com.pontointeligente.api.services.impl.LancamentoServiceImpl;
 
 @RestController
 @RequestMapping("/api/lancamentos")

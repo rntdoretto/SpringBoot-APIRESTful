@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pontointeligente.api.dtos.FuncionarioDTO;
 import com.pontointeligente.api.entities.Funcionario;
 import com.pontointeligente.api.response.Response;
-import com.pontointeligente.api.servicesimpl.FuncionarioServiceImpl;
+import com.pontointeligente.api.services.impl.FuncionarioServiceImpl;
 import com.pontointeligente.api.utils.PasswordUtils;
 
 @RestController

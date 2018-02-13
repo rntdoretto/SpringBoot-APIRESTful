@@ -22,7 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.pontointeligente.api.entities.Lancamento;
 import com.pontointeligente.api.repositories.LancamentoRepository;
-import com.pontointeligente.api.servicesimpl.LancamentoServiceImpl;
+import com.pontointeligente.api.services.impl.LancamentoServiceImpl;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

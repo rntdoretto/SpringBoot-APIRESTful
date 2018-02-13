@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pontointeligente.api.dtos.EmpresaDTO;
 import com.pontointeligente.api.entities.Empresa;
 import com.pontointeligente.api.response.Response;
-import com.pontointeligente.api.servicesimpl.EmpresaServiceImpl;
+import com.pontointeligente.api.services.impl.EmpresaServiceImpl;
 
 @RestController
 @RequestMapping("/api/empresas")

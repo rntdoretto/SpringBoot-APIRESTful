@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.pontointeligente.api.entities.Empresa;
-import com.pontointeligente.api.servicesimpl.EmpresaServiceImpl;
+import com.pontointeligente.api.services.impl.EmpresaServiceImpl;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
