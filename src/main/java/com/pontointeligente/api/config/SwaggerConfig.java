@@ -52,7 +52,7 @@ public class SwaggerConfig {
 		String token;
 		try {
 			UserDetails userDetails = this.userDetailsService.loadUserByUsername("admin@doretto.com");
-			token = this.jwtTokenUtil.obterToken(userDetails);
+			token = this.jwtTokenUtil.obterToken(userDetails); 
 		} catch (Exception e) {
 			token = "";
 		}
