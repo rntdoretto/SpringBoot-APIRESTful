@@ -3,7 +3,6 @@ package com.pontointeligente.api.security.controllers;
 import java.util.Optional;
 
 import javax.naming.AuthenticationException;
-import javax.security.auth.message.AuthException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
