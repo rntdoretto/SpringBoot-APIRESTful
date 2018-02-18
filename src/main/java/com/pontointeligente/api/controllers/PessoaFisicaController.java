@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pontointeligente.api.dtos.CadastroPFDTO;
+import com.pontointeligente.api.dtos.PessoaFisicaDTO;
 import com.pontointeligente.api.entities.Empresa;
 import com.pontointeligente.api.entities.Funcionario;
 import com.pontointeligente.api.enums.PerfilEnum;
@@ -30,9 +30,9 @@ import com.pontointeligente.api.utils.PasswordUtils;
 @RestController
 @RequestMapping("/api/cadastrar-pf")
 @CrossOrigin(origins = "*")
-public class CadastroPFController {
+public class PessoaFisicaController {
 
-	private static final Logger log = LoggerFactory.getLogger(CadastroPFController.class);
+	private static final Logger log = LoggerFactory.getLogger(PessoaFisicaController.class);
 	
 	@Autowired
 	private FuncionarioServiceImpl funcionarioService;
@@ -40,14 +40,14 @@ public class CadastroPFController {
 	@Autowired
 	private EmpresaServiceImpl empresaService;
 	
-	public CadastroPFController() {
+	public PessoaFisicaController() {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Response<CadastroPFDTO>> cadastrar(@Valid @RequestBody CadastroPFDTO cadastroPFDto,
+	public ResponseEntity<Response<PessoaFisicaDTO>> cadastrar(@Valid @RequestBody PessoaFisicaDTO cadastroPFDto,
 			BindingResult result) throws NoSuchAlgorithmException {
 		log.info("Cadastrando PF: {}", cadastroPFDto.toString());
-		Response<CadastroPFDTO> response = new Response<CadastroPFDTO>();
+		Response<PessoaFisicaDTO> response = new Response<PessoaFisicaDTO>();
 		
 		validarDadosExistentes(cadastroPFDto, result);
 		Funcionario funcionario = this.dataBindingDtoFuncionario(cadastroPFDto);
@@ -58,9 +58,9 @@ public class CadastroPFController {
 			return ResponseEntity.badRequest().body(response);
 		}
 		
-		Optional<Empresa> empresa = this.empresaService.buscarPorCnpj(cadastroPFDto.getCnpj());
-		empresa.ifPresent(emp -> funcionario.setEmpresa(emp));
-		this.funcionarioService.persistir(funcionario);
+		//Optional<Empresa> empresa = this.empresaService.buscarPorCnpj(cadastroPFDto.getCnpj());
+		//empresa.ifPresent(emp -> funcionario.setEmpresa(emp));
+		//this.funcionarioService.persistir(funcionario);
 		
 		response.setData(this.dataBindingFuncionarioParaDto(funcionario));
 		return ResponseEntity.ok(response);
@@ -71,7 +71,7 @@ public class CadastroPFController {
 	 * @param cadastroPFDto
 	 * @param result
 	 */
-	private void validarDadosExistentes(CadastroPFDTO cadastroPFDto, BindingResult result) {
+	private void validarDadosExistentes(PessoaFisicaDTO cadastroPFDto, BindingResult result) {
 		this.funcionarioService.buscarPorCpf(cadastroPFDto.getCpf())
 			.ifPresent(func -> result.addError(new ObjectError("funcionario", "CPF já existe.")));
 		this.funcionarioService.buscarPorEmail(cadastroPFDto.getEmail())
@@ -83,7 +83,7 @@ public class CadastroPFController {
 	 * @param cadastroPFDto
 	 * @return Funcionario
 	 */
-	private Funcionario dataBindingDtoFuncionario(CadastroPFDTO cadastroPFDto) throws NoSuchAlgorithmException {
+	private Funcionario dataBindingDtoFuncionario(PessoaFisicaDTO cadastroPFDto) throws NoSuchAlgorithmException {
 		Funcionario funcionario = new Funcionario();
 		funcionario.setNome(cadastroPFDto.getNome());
 		funcionario.setEmail(cadastroPFDto.getEmail());
@@ -100,8 +100,8 @@ public class CadastroPFController {
 		return funcionario;
 	}
 	
-	private CadastroPFDTO dataBindingFuncionarioParaDto(Funcionario funcionario) {
-		CadastroPFDTO cadastroPFDto = new CadastroPFDTO();
+	private PessoaFisicaDTO dataBindingFuncionarioParaDto(Funcionario funcionario) {
+		PessoaFisicaDTO cadastroPFDto = new PessoaFisicaDTO();
 		cadastroPFDto.setId(funcionario.getId());
 		cadastroPFDto.setNome(funcionario.getNome());
 		cadastroPFDto.setEmail(funcionario.getEmail());

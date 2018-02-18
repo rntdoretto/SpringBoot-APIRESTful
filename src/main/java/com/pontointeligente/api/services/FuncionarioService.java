@@ -2,7 +2,12 @@ package com.pontointeligente.api.services;
 
 import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+
+import com.pontointeligente.api.dtos.FuncionarioDTO;
 import com.pontointeligente.api.entities.Funcionario;
+import com.pontointeligente.api.response.Response;
 
 public interface FuncionarioService {
 	
@@ -11,7 +16,7 @@ public interface FuncionarioService {
 	 * @param funcionario
 	 * @return Funcionario
 	 */
-	Funcionario persistir(Funcionario funcionario);
+	ResponseEntity<Response<FuncionarioDTO>> persistir(FuncionarioDTO funcionarioDto, BindingResult result);
 	
 	/**
 	 *  Busca e retorna um funcionario através do CPF.

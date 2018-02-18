@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
 
-public class CadastroPFDTO {
+public class PessoaFisicaDTO {
 
 	private Long id;
 	private String nome;

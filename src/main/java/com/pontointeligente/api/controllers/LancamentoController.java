@@ -165,8 +165,8 @@ public class LancamentoController {
 		Optional<Lancamento> lancamento = this.lancamentoService.buscaPorId(id);
 		
 		if (!lancamento.isPresent()) {
-			log.info("Erro ao remover devido ao lançamento ID: {} ser inválido.", id);
-			response.getErrors().add("Erro ao remover lançamento. Registro não encontrado para o id " + id);
+			log.info("Erro ao remover lançamento ID: {} por ser inválido.", id);
+			response.getErrors().add("Erro ao remover lançamento. Registro não encontrado para o ID " + id);
 			return ResponseEntity.badRequest().body(response);
 		}
 		
