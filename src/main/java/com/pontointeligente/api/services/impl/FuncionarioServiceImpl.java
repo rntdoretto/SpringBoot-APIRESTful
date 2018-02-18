@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.pontointeligente.api.dtos.FuncionarioDTO;
 import com.pontointeligente.api.entities.Funcionario;
@@ -113,6 +114,23 @@ public class FuncionarioServiceImpl implements FuncionarioService{
 		}
 		
 		response.setData(this.converterFuncionarioParaDto(funcionario.get()));
+		return ResponseEntity.ok(response);
+	}
+	
+	@Override
+	public ResponseEntity<Response<String>> remover(@PathVariable("id") Long id) {
+		log.info("Removendo funcionário ID: {}", id);
+		Response<String> response = new Response<String>();
+		Optional<Funcionario> funcionario = Optional.ofNullable(this.funcionarioRepository.findOne(id));
+		
+		if(!funcionario.isPresent()) {
+			log.info("Funcionario não encontrado para o ID: {}", id);
+			response.getErrors().add("Funcionario não encontrado para o ID: {}" + id);
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		this.funcionarioRepository.delete(id);
+		response.setData("Funcionário removido ID: " + id);
 		return ResponseEntity.ok(response);
 	}
 	

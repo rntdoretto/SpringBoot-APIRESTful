@@ -9,18 +9,18 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.pontointeligente.api.entities.Funcionario;
+import com.pontointeligente.api.repositories.FuncionarioRepository;
 import com.pontointeligente.api.security.JwtUserFactory;
-import com.pontointeligente.api.services.FuncionarioService;
 
 @Service
 public class JwtUserDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired
-	private FuncionarioService funcionarioService;
+	private FuncionarioRepository funcionarioRepository;
 	
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Optional<Funcionario> funcionario = funcionarioService.buscarPorEmail(username);
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		Optional<Funcionario> funcionario = Optional.ofNullable(funcionarioRepository.findByEmail(email));
 		
 		if (funcionario.isPresent()) {
 			return JwtUserFactory.create(funcionario.get());

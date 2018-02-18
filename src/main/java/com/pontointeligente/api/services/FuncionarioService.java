@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
 import com.pontointeligente.api.dtos.FuncionarioDTO;
-import com.pontointeligente.api.entities.Funcionario;
 import com.pontointeligente.api.response.Response;
 
 public interface FuncionarioService {
@@ -32,17 +31,17 @@ public interface FuncionarioService {
 	ResponseEntity<Response<FuncionarioDTO>> buscarPorEmail(String email);
 	
 	/**
-	 *  Busca e retorna um funcionario através do Email.
-	 * @param email
-	 * @return Optional<Funcionario>
-	 */
-	Funcionario buscarParaAutenticacao(String email);
-	
-	/**
 	 *  Busca e retorna um funcionario através do Id.
 	 * @param id
 	 * @return Optional<Funcionario>
 	 */
 	ResponseEntity<Response<FuncionarioDTO>> buscarPorId(Long id);
+	
+	/**
+	 * Remove um funcionário da base de dados.
+	 * @param id
+	 * @return ResponseEntity<Response<String>>
+	 */
+	ResponseEntity<Response<String>> remover(Long id);
 
 }
