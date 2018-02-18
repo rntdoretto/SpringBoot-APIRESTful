@@ -1,6 +1,5 @@
 package com.pontointeligente.api.services;
 
-import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -23,20 +22,27 @@ public interface FuncionarioService {
 	 * @param cpf
 	 * @return Optional<Funcionario>
 	 */
-	Optional<Funcionario> buscarPorCpf(String cpf);
+	ResponseEntity<Response<FuncionarioDTO>> buscarPorCpf(String cpf);
 	
 	/**
 	 *  Busca e retorna um funcionario através do Email.
 	 * @param email
 	 * @return Optional<Funcionario>
 	 */
-	Optional<Funcionario> buscarPorEmail(String email);
+	ResponseEntity<Response<FuncionarioDTO>> buscarPorEmail(String email);
+	
+	/**
+	 *  Busca e retorna um funcionario através do Email.
+	 * @param email
+	 * @return Optional<Funcionario>
+	 */
+	Funcionario buscarParaAutenticacao(String email);
 	
 	/**
 	 *  Busca e retorna um funcionario através do Id.
 	 * @param id
 	 * @return Optional<Funcionario>
 	 */
-	Optional<Funcionario> buscarPorId(Long id);
+	ResponseEntity<Response<FuncionarioDTO>> buscarPorId(Long id);
 
 }

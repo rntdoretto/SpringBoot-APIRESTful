@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -32,6 +33,24 @@ public class FuncionarioController {
 	private FuncionarioServiceImpl funcionarioService;
 
 	public FuncionarioController() {
+	}
+	
+	@GetMapping(value = "/email/{email}")
+	public ResponseEntity<Response<FuncionarioDTO>> buscarPorEmail(@PathVariable("email") String email) {
+		log.info("Buscando funcionário por Email: {}", email);
+		return funcionarioService.buscarPorEmail(email);
+	}
+	
+	@GetMapping(value = "/cpf/{cpf}")
+	public ResponseEntity<Response<FuncionarioDTO>> buscarPorCpf(@PathVariable("cpf") String cpf) {
+		log.info("Buscando funcionário por CPF: {}", cpf);
+		return funcionarioService.buscarPorCpf(cpf);
+	}
+	
+	@GetMapping(value = "/id/{id}")
+	public ResponseEntity<Response<FuncionarioDTO>> buscarPorCpf(@PathVariable("id") Long id) {
+		log.info("Buscando funcionário por ID: {}", id);
+		return funcionarioService.buscarPorId(id);
 	}
 	
 	@PostMapping

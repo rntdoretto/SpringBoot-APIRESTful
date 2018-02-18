@@ -36,7 +36,7 @@ public class FuncionarioServiceImpl implements FuncionarioService{
 			this.funcionarioIsPresent(funcionarioDto, result);
 		}
 		else {
-			Optional<Funcionario> func = Optional.ofNullable(funcionarioRepository.findOne(funcionarioDto.getId()));
+			Optional<Funcionario> func = Optional.ofNullable(this.funcionarioRepository.findOne(funcionarioDto.getId()));
 			if (func.isPresent()) {
 				if(!func.get().getEmail().equals(funcionarioDto.getEmail()) || !func.get().getCpf().equals(funcionarioDto.getCpf())) {
 					this.funcionarioIsPresent(funcionarioDto, result);
@@ -69,21 +69,51 @@ public class FuncionarioServiceImpl implements FuncionarioService{
 	}
 
 	@Override
-	public Optional<Funcionario> buscarPorCpf(String cpf) {
+	public ResponseEntity<Response<FuncionarioDTO>> buscarPorCpf(String cpf) {
+		Response<FuncionarioDTO> response = new Response<FuncionarioDTO>();
 		log.info("Buscando funcionario pelo CPF {}", cpf);
-		return Optional.ofNullable(this.funcionarioRepository.findByCpf(cpf));
+		Optional<Funcionario> funcionario = Optional.ofNullable(this.funcionarioRepository.findByCpf(cpf));
+		
+		if(!funcionario.isPresent()) {
+			log.info("Funcionario não encontrado para o CPF: {}", cpf);
+			response.getErrors().add("Funcionario não encontrado para o CPF: {}" + cpf);
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		response.setData(this.converterFuncionarioParaDto(funcionario.get()));
+		return ResponseEntity.ok(response);
 	}
 
 	@Override
-	public Optional<Funcionario> buscarPorEmail(String email) {
+	public ResponseEntity<Response<FuncionarioDTO>> buscarPorEmail(String email) {
+		Response<FuncionarioDTO> response = new Response<FuncionarioDTO>();
 		log.info("Buscando funcionario pelo Email {}", email);
-		return Optional.ofNullable(this.funcionarioRepository.findByEmail(email));
+		Optional<Funcionario> funcionario = Optional.ofNullable(this.funcionarioRepository.findByEmail(email));
+		
+		if(!funcionario.isPresent()) {
+			log.info("Funcionario não encontrado para o Email: {}", email);
+			response.getErrors().add("Funcionario não encontrado para o Email: {}" + email);
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		response.setData(this.converterFuncionarioParaDto(funcionario.get()));
+		return ResponseEntity.ok(response);
 	}
 
 	@Override
-	public Optional<Funcionario> buscarPorId(Long id) {
+	public ResponseEntity<Response<FuncionarioDTO>> buscarPorId(Long id) {
+		Response<FuncionarioDTO> response = new Response<FuncionarioDTO>();
 		log.info("Buscando funcionario pelo ID {}", id);
-		return Optional.ofNullable(this.funcionarioRepository.findOne(id));
+		Optional<Funcionario> funcionario = Optional.ofNullable(this.funcionarioRepository.findOne(id));
+		
+		if(!funcionario.isPresent()) {
+			log.info("Funcionario não encontrado para o ID: {}", id);
+			response.getErrors().add("Funcionario não encontrado para o ID: {}" + id);
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		response.setData(this.converterFuncionarioParaDto(funcionario.get()));
+		return ResponseEntity.ok(response);
 	}
 	
 	/**
