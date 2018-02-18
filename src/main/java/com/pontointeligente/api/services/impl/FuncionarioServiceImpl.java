@@ -35,7 +35,7 @@ public class FuncionarioServiceImpl implements FuncionarioService{
 	public ResponseEntity<Response<FuncionarioDTO>> persistir(FuncionarioDTO funcionarioDto, BindingResult result) {
 		Response<FuncionarioDTO> response = new Response<FuncionarioDTO>();
 		
-		if(funcionarioDto.getId() == 0 || funcionarioDto.getId() == null) {
+		if(funcionarioDto.getId() == null) {
 			this.funcionarioIsPresent(funcionarioDto, result);
 		}
 		else {

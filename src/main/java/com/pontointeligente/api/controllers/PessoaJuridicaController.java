@@ -49,7 +49,7 @@ public class PessoaJuridicaController {
 		
 		Response<PessoaJuridicaDTO> response = new Response<PessoaJuridicaDTO>();
 		
-		this.validarDadosExistentes(pessoaJuridicaDto, result);
+//		this.validarDadosExistentes(pessoaJuridicaDto, result);
 		Empresa empresa = this.dataBindingDtoEmpresa(pessoaJuridicaDto);
 		Funcionario funcionario = this.dataBindingDtoFuncionario(pessoaJuridicaDto);
 		
@@ -73,12 +73,12 @@ public class PessoaJuridicaController {
 	 * @param pessoaJuridicaDto
 	 * @param result
 	 */
-	private void validarDadosExistentes(PessoaJuridicaDTO pessoaJuridicaDto, BindingResult result) {
+	/*private void validarDadosExistentes(PessoaJuridicaDTO pessoaJuridicaDto, BindingResult result) {
 		this.funcionarioService.buscarPorCpf(pessoaJuridicaDto.getCpf())
 			.ifPresent(func -> result.addError(new ObjectError("funcionario", "CPF já existe.")));
 		this.funcionarioService.buscarPorEmail(pessoaJuridicaDto.getEmail())
 			.ifPresent(func -> result.addError(new ObjectError("funcionario", "Email já existe.")));
-	}
+	}*/
 	
 	/**
 	 * DataBinding de CadastroPJDTO com Empresa

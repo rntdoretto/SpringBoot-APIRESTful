@@ -79,7 +79,7 @@ public class EmpresaServiceImpl implements EmpresaService {
 	public ResponseEntity<Response<EmpresaDTO>> persistir(EmpresaDTO empresaDto, BindingResult result) {
 		Response<EmpresaDTO> response = new Response<EmpresaDTO>();
 
-		if (empresaDto.getId() == 0 || empresaDto.getId() == null) {
+		if (empresaDto.getId() == null) {
 			this.empresaIsPresent(empresaDto, result);
 		}
 		else {

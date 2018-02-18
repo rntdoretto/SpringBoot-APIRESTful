@@ -1,11 +1,11 @@
 package com.pontointeligente.api.services;
 
-import java.util.Optional;
-
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 
-import com.pontointeligente.api.entities.Lancamento;
+import com.pontointeligente.api.dtos.LancamentoDTO;
+import com.pontointeligente.api.response.Response;
 
 public interface LancamentoService {
 
@@ -15,26 +15,26 @@ public interface LancamentoService {
 	 * @param pageRequest
 	 * @return Page<Lancamento>
 	 */
-	Page<Lancamento> buscarPorFuncionarioId(Long idFuncionario, PageRequest pageRequest);
+	ResponseEntity<Response<Page<LancamentoDTO>>> buscarPorFuncionarioId(Long idFuncionario, int pag, String ord, String dir);
 	
 	/**
 	 * Retorna um lançamento por ID.
 	 * @param id
 	 * @return Optional<Lancamento>
 	 */
-	Optional<Lancamento> buscaPorId(Long id);
+	ResponseEntity<Response<LancamentoDTO>> buscaPorId(Long id);
 	
 	/**
 	 * Persuste um lançamento na base de dados.
 	 * @param lancamento
 	 * @return Lancamento
 	 */
-	Lancamento persistir(Lancamento lancamento);
+	ResponseEntity<Response<LancamentoDTO>> persistir(LancamentoDTO lancamentoDto, BindingResult result);
 	
 	/**
 	 * Remove um lançamento da base de dados.
 	 * @param id
 	 */
-	void remover(Long id);
+	ResponseEntity<Response<String>> remover(Long id);
 	
 }

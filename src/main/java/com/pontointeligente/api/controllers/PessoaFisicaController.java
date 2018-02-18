@@ -37,9 +37,6 @@ public class PessoaFisicaController {
 	@Autowired
 	private FuncionarioServiceImpl funcionarioService;
 	
-	@Autowired
-	private EmpresaServiceImpl empresaService;
-	
 	public PessoaFisicaController() {
 	}
 	
@@ -49,7 +46,7 @@ public class PessoaFisicaController {
 		log.info("Cadastrando PF: {}", cadastroPFDto.toString());
 		Response<PessoaFisicaDTO> response = new Response<PessoaFisicaDTO>();
 		
-		validarDadosExistentes(cadastroPFDto, result);
+//		validarDadosExistentes(cadastroPFDto, result);
 		Funcionario funcionario = this.dataBindingDtoFuncionario(cadastroPFDto);
 		
 		if (result.hasErrors()) {
@@ -71,12 +68,12 @@ public class PessoaFisicaController {
 	 * @param cadastroPFDto
 	 * @param result
 	 */
-	private void validarDadosExistentes(PessoaFisicaDTO cadastroPFDto, BindingResult result) {
+	/*private void validarDadosExistentes(PessoaFisicaDTO cadastroPFDto, BindingResult result) {
 		this.funcionarioService.buscarPorCpf(cadastroPFDto.getCpf())
 			.ifPresent(func -> result.addError(new ObjectError("funcionario", "CPF já existe.")));
 		this.funcionarioService.buscarPorEmail(cadastroPFDto.getEmail())
 			.ifPresent(func -> result.addError(new ObjectError("funcionario", "Email já existe.")));
-	}
+	}*/
 	
 	/**
 	 * DataBinding de CadastroPFDTO com Funcionario
