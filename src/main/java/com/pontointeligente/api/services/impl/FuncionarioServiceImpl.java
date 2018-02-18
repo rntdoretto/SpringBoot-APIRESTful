@@ -2,6 +2,8 @@ package com.pontointeligente.api.services.impl;
 
 import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -118,6 +120,22 @@ public class FuncionarioServiceImpl implements FuncionarioService{
 	}
 	
 	@Override
+	public ResponseEntity<Response<List<FuncionarioDTO>>> buscarPorEmpresaId(Long idEmpresa) {
+		Response<List<FuncionarioDTO>> response = new Response<List<FuncionarioDTO>>();
+		
+		Optional<List<Funcionario>> funcionarios = Optional.ofNullable(this.funcionarioRepository.findByEmpresaId(idEmpresa));
+		
+		if(!funcionarios.isPresent()) {
+			log.info("Nenhum funcionario encontrado para a empresa ID: {}", idEmpresa);
+			response.getErrors().add("Funcionario não encontrado para o ID: {}" + idEmpresa);
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		response.setData(this.converterFuncionariosParaDto(funcionarios.get()));
+		return ResponseEntity.ok(response);
+	}
+	
+	@Override
 	public ResponseEntity<Response<String>> remover(@PathVariable("id") Long id) {
 		log.info("Removendo funcionário ID: {}", id);
 		Response<String> response = new Response<String>();
@@ -171,6 +189,27 @@ public class FuncionarioServiceImpl implements FuncionarioService{
 			.ifPresent(valorHora -> funcionarioDto.setValorHora(Optional.of(valorHora.toString())));
 		
 		return funcionarioDto;
+	}
+	
+	private List<FuncionarioDTO> converterFuncionariosParaDto(List<Funcionario> funcionarios) {
+		List<FuncionarioDTO> funcionariosDto = new ArrayList<FuncionarioDTO>();
+		
+		funcionarios.forEach(funcionario -> {
+			FuncionarioDTO funcionarioDto = new FuncionarioDTO();
+			funcionarioDto.setId(funcionario.getId());
+			funcionarioDto.setNome(funcionario.getNome());
+			funcionarioDto.setEmail(funcionario.getEmail());
+			funcionarioDto.setCpf(funcionario.getCpf());
+			funcionario.getQtdHorasAlmocoOpt()
+				.ifPresent(qtdHorasAlmoco -> funcionarioDto.setQtdHorasAlmoco(Optional.of(Float.toString(qtdHorasAlmoco))));
+			funcionario.getQtdHorasTrabalhoDiaOpt()
+				.ifPresent(qtdHorasTrabDia -> funcionarioDto.setQtdHorasTrabalhoDia(Optional.of(Float.toString(qtdHorasTrabDia))));
+			funcionario.getValorHoraOpt()
+				.ifPresent(valorHora -> funcionarioDto.setValorHora(Optional.of(valorHora.toString())));
+			funcionariosDto.add(funcionarioDto);
+		});
+		
+		return funcionariosDto;
 	}
 	
 	/**

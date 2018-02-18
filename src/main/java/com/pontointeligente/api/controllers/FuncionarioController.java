@@ -1,6 +1,7 @@
 package com.pontointeligente.api.controllers;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -53,6 +54,12 @@ public class FuncionarioController {
 	public ResponseEntity<Response<FuncionarioDTO>> buscarPorCpf(@PathVariable("id") Long id) {
 		log.info("Buscando funcionário por ID: {}", id);
 		return funcionarioService.buscarPorId(id);
+	}
+	
+	@GetMapping(value = "/idEmpresa/{id}")
+	public ResponseEntity<Response<List<FuncionarioDTO>>> buscarPorEmpresaId(@PathVariable("id") Long id) {
+		log.info("Buscando funcionários por empresa ID: {}", id);
+		return funcionarioService.buscarPorEmpresaId(id);
 	}
 	
 	@PostMapping

@@ -39,7 +39,7 @@ public class EmpresaServiceImpl implements EmpresaService {
 			return ResponseEntity.badRequest().body(response);
 		}
 
-		response.setData(this.converterEmpresaParaDto(empresas.get()));
+		response.setData(this.converterEmpresasParaDto(empresas.get()));
 		return ResponseEntity.ok(response);
 	}
 	
@@ -155,7 +155,7 @@ public class EmpresaServiceImpl implements EmpresaService {
 	 * @param empresa
 	 * @return EmpresaDTO
 	 */
-	private List<EmpresaDTO> converterEmpresaParaDto(List<Empresa> empresas) {
+	private List<EmpresaDTO> converterEmpresasParaDto(List<Empresa> empresas) {
 		List<EmpresaDTO> empresasDto = new ArrayList<EmpresaDTO>();
 		
 		empresas.forEach(empresa -> {
