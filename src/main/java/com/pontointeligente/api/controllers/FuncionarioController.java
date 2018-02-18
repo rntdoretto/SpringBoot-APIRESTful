@@ -51,7 +51,7 @@ public class FuncionarioController {
 	}
 	
 	@GetMapping(value = "/id/{id}")
-	public ResponseEntity<Response<FuncionarioDTO>> buscarPorCpf(@PathVariable("id") Long id) {
+	public ResponseEntity<Response<FuncionarioDTO>> buscarPorId(@PathVariable("id") Long id) {
 		log.info("Buscando funcionário por ID: {}", id);
 		return funcionarioService.buscarPorId(id);
 	}

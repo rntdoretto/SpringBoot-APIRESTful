@@ -4,8 +4,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.Optional;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
@@ -15,13 +13,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.pontointeligente.api.entities.Empresa;
+import com.pontointeligente.api.dtos.EmpresaDTO;
+import com.pontointeligente.api.response.Response;
 import com.pontointeligente.api.services.impl.EmpresaServiceImpl;
 
 @RunWith(SpringRunner.class)
@@ -45,7 +45,7 @@ public class EmpresaControllerTest {
 	@WithMockUser
 	public void testBuscarEmpresaCnpjInvalido() throws Exception {
 		BDDMockito.given(this.empresaService.buscarPorCnpj(Mockito.anyString()))
-				.willReturn(Optional.empty());
+				.willReturn(this.empresaInvalida());
 		
 		mvc.perform(MockMvcRequestBuilders
 				.get(BUSCAR_EMPRESA_CNPJ_URL + CNPJ)
@@ -58,7 +58,7 @@ public class EmpresaControllerTest {
 	@WithMockUser
 	public void testarBuscarEmpresaCnpjValido() throws Exception {
 		BDDMockito.given(this.empresaService.buscarPorCnpj(Mockito.anyString()))
-				.willReturn(Optional.of(this.obterDadosEmpresa()));
+				.willReturn(this.obterDadosEmpresa());
 		
 		mvc.perform(MockMvcRequestBuilders
 				.get(BUSCAR_EMPRESA_CNPJ_URL + CNPJ)
@@ -70,12 +70,20 @@ public class EmpresaControllerTest {
 				.andExpect(jsonPath("$.errors").isEmpty());
 	}
 	
-	private Empresa obterDadosEmpresa() {
-		Empresa empresa = new Empresa();
-		empresa.setId(ID);
-		empresa.setRazaoSocial(RAZAO_SOCIAL);
-		empresa.setCnpj(CNPJ);
-		return empresa;
+	private ResponseEntity<Response<EmpresaDTO>> obterDadosEmpresa() {
+		Response<EmpresaDTO> response = new Response<EmpresaDTO>();
+		EmpresaDTO empresaDto = new EmpresaDTO();
+		empresaDto.setId(ID);
+		empresaDto.setRazaoSocial(RAZAO_SOCIAL);
+		empresaDto.setCnpj(CNPJ);
+		response.setData(empresaDto);
+		return ResponseEntity.ok(response);
+	}
+	
+	private ResponseEntity<Response<EmpresaDTO>> empresaInvalida() {
+		Response<EmpresaDTO> response = new Response<EmpresaDTO>();
+		response.getErrors().add("Empresa não encontrada para o CNPJ " + CNPJ);
+		return ResponseEntity.badRequest().body(response);
 	}
 
 }

@@ -16,18 +16,20 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.validation.BindingResult;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pontointeligente.api.dtos.FuncionarioDTO;
 import com.pontointeligente.api.dtos.LancamentoDTO;
-import com.pontointeligente.api.entities.Funcionario;
-import com.pontointeligente.api.entities.Lancamento;
 import com.pontointeligente.api.enums.TipoEnum;
+import com.pontointeligente.api.response.Response;
 import com.pontointeligente.api.services.impl.FuncionarioServiceImpl;
 import com.pontointeligente.api.services.impl.LancamentoServiceImpl;
 
@@ -47,6 +49,7 @@ public class LancamentoControllerTest {
 	private FuncionarioServiceImpl funcionarioService;
 	
 	private static final String URL_BASE = "/api/lancamentos/";
+	private static final String	URL_BUSCA_FUNCIONARIO_ID = "/api/funcionarios/id/";
 	private static final Long ID_FUNCIONARIO = 1L;
 	private static final Long ID_LANCAMENTO = 1L;
 	private static final String TIPO = TipoEnum.INICIO_TRABALHO.name();
@@ -57,13 +60,13 @@ public class LancamentoControllerTest {
 	@Test
 	@WithMockUser
 	public void testCadastrarLancamento() throws Exception {
-		Lancamento lancamento = obterDadosLancamento();
 		BDDMockito.given(this.funcionarioService.buscarPorId(Mockito.anyLong()))
-				.willReturn(Optional.of(new Funcionario()));
-		BDDMockito.given(this.lancamentoService.persistir(Mockito.any(Lancamento.class)))
-				.willReturn(lancamento);
+				.willReturn(this.obterDadosFuncionario());
+		BDDMockito.given(this.lancamentoService.persistir(Mockito.any(LancamentoDTO.class), Mockito.any(BindingResult.class)))
+				.willReturn(this.obterDadosLancamento());
 		
-		mvc.perform(MockMvcRequestBuilders.post(URL_BASE)
+		mvc.perform(MockMvcRequestBuilders
+				.post(URL_BASE)
 				.content(this.obterJsonRequestPost())
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
@@ -78,11 +81,10 @@ public class LancamentoControllerTest {
 	@WithMockUser
 	public void testCadastrarLancamentoIdFuncionarioInvalido() throws Exception {
 		BDDMockito.given(this.funcionarioService.buscarPorId(Mockito.anyLong()))
-				.willReturn(Optional.empty());
+				.willReturn(this.funcionarioInvalido());
 		
-		mvc.perform(MockMvcRequestBuilders.post(URL_BASE)
-				.content(this.obterJsonRequestPost())
-				.contentType(MediaType.APPLICATION_JSON)
+		mvc.perform(MockMvcRequestBuilders
+				.get(URL_BUSCA_FUNCIONARIO_ID + ID_FUNCIONARIO)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.errors").value("Funcionário não encontrado. ID inexistente."))
@@ -93,7 +95,7 @@ public class LancamentoControllerTest {
 	@WithMockUser(username = "admin@admin.com", roles = {"ADMIN"})
 	public void testRemoverLancamento() throws Exception {
 		BDDMockito.given(this.lancamentoService.buscaPorId(Mockito.anyLong()))
-				.willReturn(Optional.of(new Lancamento()));
+				.willReturn(this.obterDadosLancamento());
 		
 		mvc.perform(MockMvcRequestBuilders.delete(URL_BASE + ID_LANCAMENTO)
 				.accept(MediaType.APPLICATION_JSON))
@@ -104,7 +106,7 @@ public class LancamentoControllerTest {
 	@WithMockUser
 	public void testRemoverLancamentoAcessoNegado() throws Exception {
 		BDDMockito.given(this.lancamentoService.buscaPorId(Mockito.anyLong()))
-				.willReturn(Optional.of(new Lancamento()));
+				.willReturn(this.obterDadosLancamento());
 		
 		mvc.perform(MockMvcRequestBuilders.delete(URL_BASE + ID_LANCAMENTO)
 				.accept(MediaType.APPLICATION_JSON))
@@ -121,13 +123,28 @@ public class LancamentoControllerTest {
 		return mapper.writeValueAsString(lancamentoDto);
 	}
 	
-	private Lancamento obterDadosLancamento() {
-		Lancamento lancamento = new Lancamento();
-		lancamento.setId(ID_LANCAMENTO);
-		lancamento.setData(DATA);
-		lancamento.setTipo(TipoEnum.valueOf(TIPO));
-		lancamento.setFuncionario(new Funcionario());
-		lancamento.getFuncionario().setId(ID_FUNCIONARIO);
-		return lancamento;
+	private ResponseEntity<Response<LancamentoDTO>> obterDadosLancamento() {
+		Response<LancamentoDTO> response = new Response<LancamentoDTO>();
+		LancamentoDTO lancamentoDto = new LancamentoDTO();
+		lancamentoDto.setId(Optional.of(ID_LANCAMENTO));
+		lancamentoDto.setData(this.dateFormat.format(DATA));
+		lancamentoDto.setTipo(TipoEnum.valueOf(TIPO).toString());
+		lancamentoDto.setIdFuncionario(ID_FUNCIONARIO);
+		response.setData(lancamentoDto);
+		return ResponseEntity.ok(response);
+	}
+	
+	private ResponseEntity<Response<FuncionarioDTO>> obterDadosFuncionario() {
+		Response<FuncionarioDTO> response = new Response<FuncionarioDTO>();
+		FuncionarioDTO funcionarioDto = new FuncionarioDTO();
+		funcionarioDto.setId(ID_FUNCIONARIO);
+		response.setData(funcionarioDto);
+		return ResponseEntity.ok(response);
+	}
+	
+	private ResponseEntity<Response<FuncionarioDTO>> funcionarioInvalido() {
+		Response<FuncionarioDTO> response = new Response<FuncionarioDTO>();
+		response.getErrors().add("Funcionário não encontrado. ID inexistente.");
+		return ResponseEntity.badRequest().body(response);
 	}
 }
