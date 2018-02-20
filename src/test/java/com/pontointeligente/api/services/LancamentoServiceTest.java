@@ -2,7 +2,6 @@ package com.pontointeligente.api.services;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import org.junit.Before;
@@ -37,7 +36,7 @@ public class LancamentoServiceTest {
 	@Autowired
 	private LancamentoServiceImpl lancamentoService;
 	
-	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	@Before
 	public void setUp() throws Exception {

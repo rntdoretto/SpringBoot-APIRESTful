@@ -7,10 +7,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.pontointeligente.api.dtos.EmpresaDTO;
@@ -28,7 +25,7 @@ public class EmpresaServiceImpl implements EmpresaService {
 	private EmpresaRepository empresaRepository;
 
 	@Override
-	public ResponseEntity<Response<List<EmpresaDTO>>> buscarTodos() {
+	public Response<List<EmpresaDTO>> buscarTodos() {
 		Response<List<EmpresaDTO>> response = new Response<List<EmpresaDTO>>();
 		log.info("Buscando uma empresas.");
 		Optional<List<Empresa>> empresas = Optional.ofNullable(empresaRepository.findAll());
@@ -36,15 +33,16 @@ public class EmpresaServiceImpl implements EmpresaService {
 		if(!empresas.isPresent()) {
 			log.info("Nenhuma empresa encontrada.");
 			response.getErrors().add("Nenhuma empresa encontrada.");
-			return ResponseEntity.badRequest().body(response);
+			return response;
 		}
 
 		response.setData(this.converterEmpresasParaDto(empresas.get()));
-		return ResponseEntity.ok(response);
+		
+		return response;
 	}
 	
 	@Override
-	public ResponseEntity<Response<EmpresaDTO>> buscarPorId(Long id) {
+	public Response<EmpresaDTO> buscarPorId(Long id) {
 		Response<EmpresaDTO> response = new Response<EmpresaDTO>();
 		log.info("Buscando uma empresa para o ID {}.", id);
 		Optional<Empresa> empresa = Optional.ofNullable(empresaRepository.findOne(id));
@@ -52,15 +50,16 @@ public class EmpresaServiceImpl implements EmpresaService {
 		if(!empresa.isPresent()) {
 			log.info("Empresa não encontrada para o ID: {}", id);
 			response.getErrors().add("Empresa não encontrada para o ID: {}" + id);
-			return ResponseEntity.badRequest().body(response);
+			return response;
 		}
 
 		response.setData(this.converterEmpresaParaDto(empresa.get()));
-		return ResponseEntity.ok(response);
+		
+		return response;
 	}
 
 	@Override
-	public ResponseEntity<Response<EmpresaDTO>> buscarPorCnpj(String cnpj) {
+	public Response<EmpresaDTO> buscarPorCnpj(String cnpj) {
 		Response<EmpresaDTO> response = new Response<EmpresaDTO>();
 		log.info("Buscando uma empresa para o CNPJ {}.", cnpj);
 		Optional<Empresa> empresa = Optional.ofNullable(empresaRepository.findByCnpj(cnpj));
@@ -68,61 +67,60 @@ public class EmpresaServiceImpl implements EmpresaService {
 		if(!empresa.isPresent()) {
 			log.info("Empresa não encontrada para o CNPJ: {}", cnpj);
 			response.getErrors().add("Empresa não encontrada para o CNPJ " + cnpj);
-			return ResponseEntity.badRequest().body(response);
+			return response;
 		}
 
 		response.setData(this.converterEmpresaParaDto(empresa.get()));
-		return ResponseEntity.ok(response);
+		return response;
 	}
 
 	@Override
-	public ResponseEntity<Response<EmpresaDTO>> persistir(EmpresaDTO empresaDto, BindingResult result) {
+	public Response<EmpresaDTO> persistir(EmpresaDTO empresaDto) {
 		Response<EmpresaDTO> response = new Response<EmpresaDTO>();
 
 		if (empresaDto.getId() == null) {
-			this.empresaIsPresent(empresaDto, result);
+			this.empresaIsPresent(empresaDto, response);
 		}
 		else {
 			Optional<Empresa> emp = Optional.ofNullable(this.empresaRepository.findOne(empresaDto.getId()));
 			if(emp.isPresent()) {
 				if (!emp.get().getCnpj().trim().equals(empresaDto.getCnpj().trim())) {
-					this.empresaIsPresent(empresaDto, result);
+					this.empresaIsPresent(empresaDto, response);
 				}
 			}
 			else {
-				result.addError(new ObjectError("empresa", "Empresa não encontrado."));
+				response.getErrors().add("Empresa não encontrado.");
 			}
+		}
+		
+		if (!response.getErrors().isEmpty()) {
+			log.error("Erro ao persistir empresa: {}", response.getErrors());
+			return response;
 		}
 
 		Empresa empresa = converterDtoParaEmpresa(empresaDto);
-
-		if (result.hasErrors()) {
-			log.error("Erro ao persistir empresa: {}", result.getAllErrors());
-			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(response);
-		}
 
 		log.info("Persistindo empresa: {}.", empresa.toString());
 		this.empresaRepository.save(empresa);
 
 		response.setData(this.converterEmpresaParaDto(empresa));
-		return ResponseEntity.ok(response);
+		return response;
 	}
 	
-	public ResponseEntity<Response<String>> remover(@PathVariable("id") Long id) {
+	public Response<String> remover(@PathVariable("id") Long id) {
 		log.info("Removendo lançamento ID: {}", id);
 		Response<String> response = new Response<String>();
 		Optional<Empresa> empresa = Optional.ofNullable(this.empresaRepository.findOne(id));
 		
 		if (!empresa.isPresent()) {
-			log.info("Erro ao remover empresa ID: {} por ser inválido.", id);
+			log.error("Erro ao remover empresa ID: {} por ser inválido.", id);
 			response.getErrors().add("Erro ao remover empresa. Registro não encontrado para o ID " + id);
-			return ResponseEntity.badRequest().body(response);
+			return response;
 		}
 		
 		this.empresaRepository.delete(id);
 		response.setData("Empresa removida ID: " + id);
-		return ResponseEntity.ok(response);
+		return response;
 	}
 
 	/**
@@ -174,9 +172,9 @@ public class EmpresaServiceImpl implements EmpresaService {
 	 * @param empresaDto
 	 * @param result
 	 */
-	private void empresaIsPresent(EmpresaDTO empresaDto, BindingResult result) {
+	private void empresaIsPresent(EmpresaDTO empresaDto, Response<EmpresaDTO> response) {
 		Optional<Empresa> empresa = Optional.ofNullable(this.empresaRepository.findByCnpj(empresaDto.getCnpj()));
-		empresa.ifPresent(emp -> result.addError(new ObjectError("empresa", "Empresa já existente.")));
+		empresa.ifPresent(emp -> response.getErrors().add("Empresa já existente."));
 	}
 
 }

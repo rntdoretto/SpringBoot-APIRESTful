@@ -40,25 +40,31 @@ public class EmpresaController {
 	@GetMapping
 	public ResponseEntity<Response<List<EmpresaDTO>>> buscarTodos() {
 		log.info("Buscando empresas.");
-		return empresaService.buscarTodos();
+		Response<List<EmpresaDTO>> response = this.empresaService.buscarTodos();
+		
+		if (!response.getErrors().isEmpty()) {
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		return ResponseEntity.ok(response);
 	}
 	
 	@GetMapping(value = "/id/{id}")
 	public ResponseEntity<Response<EmpresaDTO>> buscarPorId(@PathVariable("id") Long id) {
 		log.info("Buscando empresa por ID: {}", id);
-		return empresaService.buscarPorId(id);
+		return response(this.empresaService.buscarPorId(id));
 	}
 	
 	@GetMapping(value = "/cnpj/{cnpj}")
 	public ResponseEntity<Response<EmpresaDTO>> buscarPorCnpj(@PathVariable("cnpj") String cnpj) {
 		log.info("Buscando empresa por CNPJ: {}", cnpj);
-		return empresaService.buscarPorCnpj(cnpj);
+		return response(this.empresaService.buscarPorCnpj(cnpj));
 	}
 	
 	@PostMapping
 	public ResponseEntity<Response<EmpresaDTO>> inserir(@Valid @RequestBody EmpresaDTO dto, BindingResult result) {
 		log.info("Inserindo empresa: {}", dto.toString());
-		return empresaService.persistir(dto, result);
+		return response(this.empresaService.persistir(dto));
 	}
 	
 	@PutMapping(value = "{id}")
@@ -66,13 +72,27 @@ public class EmpresaController {
 			@Valid @RequestBody EmpresaDTO dto, BindingResult result) {
 		log.info("Atualizando empresa: {}", dto.toString());
 		dto.setId(id);
-		return empresaService.persistir(dto, result);
+		return response(this.empresaService.persistir(dto));
 	}
 	
 	@DeleteMapping(value = "{id}")
 	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<Response<String>> remover(@PathVariable("id") Long id) {
 		log.info("Removendo empresa ID: {}", id);
-		return empresaService.remover(id);
+		Response<String> response = this.empresaService.remover(id);
+		
+		if(!response.getErrors().isEmpty()) {
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		return ResponseEntity.ok(response);
+	}
+	
+	private ResponseEntity<Response<EmpresaDTO>> response(Response<EmpresaDTO> res){
+		if (!res.getErrors().isEmpty()) {
+			return ResponseEntity.badRequest().body(res);
+		}
+		
+		return ResponseEntity.ok(res);
 	}
 }

@@ -13,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -70,20 +69,20 @@ public class EmpresaControllerTest {
 				.andExpect(jsonPath("$.errors").isEmpty());
 	}
 	
-	private ResponseEntity<Response<EmpresaDTO>> obterDadosEmpresa() {
+	private Response<EmpresaDTO> obterDadosEmpresa() {
 		Response<EmpresaDTO> response = new Response<EmpresaDTO>();
 		EmpresaDTO empresaDto = new EmpresaDTO();
 		empresaDto.setId(ID);
 		empresaDto.setRazaoSocial(RAZAO_SOCIAL);
 		empresaDto.setCnpj(CNPJ);
 		response.setData(empresaDto);
-		return ResponseEntity.ok(response);
+		return response;
 	}
 	
-	private ResponseEntity<Response<EmpresaDTO>> empresaInvalida() {
+	private Response<EmpresaDTO> empresaInvalida() {
 		Response<EmpresaDTO> response = new Response<EmpresaDTO>();
 		response.getErrors().add("Empresa não encontrada para o CNPJ " + CNPJ);
-		return ResponseEntity.badRequest().body(response);
+		return response;
 	}
 
 }
