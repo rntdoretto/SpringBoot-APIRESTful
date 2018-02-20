@@ -29,19 +29,18 @@ public class EmpresaServiceTest {
 	@Autowired
 	private EmpresaService empresaService;
 	
-	private static final String CNPJ = "51463645000100";
-	
 	@Before
 	public void setUp() throws Exception {
-		BDDMockito.given(this.empresaRepository.findByCnpj(Mockito.anyString()))
-				.willReturn(new Empresa());
 		BDDMockito.given(this.empresaRepository.save(Mockito.any(Empresa.class)))
 				.willReturn(new Empresa());
+		BDDMockito.given(this.empresaRepository.findOne(Mockito.anyLong()))
+				.willReturn(new Empresa());
+		
 	}
 	
 	@Test
 	public void testBuscarEmpresaPorCnpj() {
-		Response<EmpresaDTO> response = this.empresaService.buscarPorCnpj(CNPJ);
+		Response<EmpresaDTO> response = this.empresaService.buscarPorId(1L);
 		assertNotNull(response.getData());
 	}
 	
@@ -50,5 +49,4 @@ public class EmpresaServiceTest {
 		Response<EmpresaDTO> response = this.empresaService.persistir(new EmpresaDTO());
 		assertNotNull(response.getData());
 	}
-	
 }
