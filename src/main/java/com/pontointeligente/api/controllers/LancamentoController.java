@@ -58,7 +58,13 @@ public class LancamentoController {
 			@RequestParam(value = "ord", defaultValue = "id") String ord,
 			@RequestParam(value = "dir", defaultValue = "DESC") String dir) {
 		log.info("Buscando lançamentos por ID do funcionário: {}. página: {}", idFuncionario, pag);
-		return lancamentoService.buscarPorFuncionarioId(idFuncionario, pag, ord, dir);
+		Response<Page<LancamentoDTO>> response = lancamentoService.buscarPorFuncionarioId(idFuncionario, pag, ord, dir);
+		
+		if (!response.getErrors().isEmpty()) {
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		return ResponseEntity.ok(response);
 	}
 	
 	/**
@@ -69,7 +75,7 @@ public class LancamentoController {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<Response<LancamentoDTO>> listarPorId(@PathVariable("id") Long id) {
 		log.info("Buscando lançamento por ID: {}", id);
-		return lancamentoService.buscaPorId(id);
+		return response(lancamentoService.buscaPorId(id));
 	}
 	
 	/**
@@ -83,7 +89,7 @@ public class LancamentoController {
 	public ResponseEntity<Response<LancamentoDTO>> adicionar(@Valid @RequestBody LancamentoDTO lancamentoDto, 
 			BindingResult result) throws ParseException {
 		log.info("Adicionando lançamento: {}", lancamentoDto.toString());
-		return lancamentoService.persistir(lancamentoDto, result);
+		return response(lancamentoService.persistir(lancamentoDto));
 	}
 	
 	/**
@@ -98,13 +104,27 @@ public class LancamentoController {
 	public ResponseEntity<Response<LancamentoDTO>> atualizar(@PathVariable("id") Long id,
 			@Valid @RequestBody LancamentoDTO lancamentoDto, BindingResult result) throws ParseException {
 		log.info("Atualizando lançamento: {}", lancamentoDto.toString());
-		return lancamentoService.persistir(lancamentoDto, result);
+		return response(lancamentoService.persistir(lancamentoDto));
 	}
 	
 	@DeleteMapping(value = "/{id}")
 	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<Response<String>> remover(@PathVariable("id") Long id) {
 		log.info("Removendo lançamento ID: {}", id);
-		return lancamentoService.remover(id);
+		Response<String> response = lancamentoService.remover(id);
+		
+		if (!response.getErrors().isEmpty()) {
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		return ResponseEntity.ok(response);
+	}
+	
+	private ResponseEntity<Response<LancamentoDTO>> response(Response<LancamentoDTO> res){
+		if (!res.getErrors().isEmpty()) {
+			return ResponseEntity.badRequest().body(res);
+		}
+		
+		return ResponseEntity.ok(res);
 	}
 }

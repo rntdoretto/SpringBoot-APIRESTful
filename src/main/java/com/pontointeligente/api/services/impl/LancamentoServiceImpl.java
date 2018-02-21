@@ -13,10 +13,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 
 import com.pontointeligente.api.dtos.LancamentoDTO;
 import com.pontointeligente.api.entities.Funcionario;
@@ -41,22 +38,29 @@ public class LancamentoServiceImpl implements LancamentoService {
 	private int qtdPorPagina;
 
 	@Override
-	public ResponseEntity<Response<Page<LancamentoDTO>>> buscarPorFuncionarioId(Long idFuncionario, int pag, String ord, String dir) {
+	public Response<Page<LancamentoDTO>> buscarPorFuncionarioId(Long idFuncionario, int pag, String ord, String dir) {
 		log.info("Buscando lançamentos para o funcionário ID:{}", idFuncionario);
 
 		Response<Page<LancamentoDTO>> response = new Response<Page<LancamentoDTO>>();
 
 		PageRequest pageRequest = new PageRequest(pag, this.qtdPorPagina, Direction.valueOf(dir), ord);
-		Page<Lancamento> lancamentos = this.lancamentoRepository.findByFuncionarioId(idFuncionario, pageRequest);
-		Page<LancamentoDTO> lancamentosDto = lancamentos.map(lancamento -> this.converterLancamentoParaDto(lancamento));
+		Optional<Page<Lancamento>> lancamentos = Optional.ofNullable(this.lancamentoRepository.findByFuncionarioId(idFuncionario, pageRequest));
+		
+		if (!lancamentos.isPresent()) {
+			log.info("Nenhum lançamento encontrado para o funcionário ID: {}", idFuncionario);
+			response.getErrors().add("Nenhum lançamento encontrado para o funcionário.");
+			return response;
+		}
+		
+		Page<LancamentoDTO> lancamentosDto = lancamentos.get().map(lancamento -> this.converterLancamentoParaDto(lancamento));
 
 		response.setData(lancamentosDto);
-		return ResponseEntity.ok(response);
+		return response;
 	}
 
 	@Override
 	@Cacheable("lancamentoPorId")
-	public ResponseEntity<Response<LancamentoDTO>> buscaPorId(Long id) {
+	public Response<LancamentoDTO> buscaPorId(Long id) {
 		log.info("Buscando um lançamento pelo ID:{}", id);
 		Response<LancamentoDTO> response = new Response<LancamentoDTO>();
 		Optional<Lancamento> lancamento = Optional.ofNullable(this.lancamentoRepository.findOne(id));
@@ -64,39 +68,39 @@ public class LancamentoServiceImpl implements LancamentoService {
 		if(!lancamento.isPresent()) {
 			log.info("Lançamento não encontrado para o ID: {}", id);
 			response.getErrors().add("Lançamento não encontrado para o ID "+ id);
-			return ResponseEntity.badRequest().body(response);
+			return response;
 		}
 		
 		response.setData(this.converterLancamentoParaDto(lancamento.get()));
-		return ResponseEntity.ok(response);
+		return response;
 	}
 
 	@Override
 	@CachePut("lancamentoPorId")
-	public ResponseEntity<Response<LancamentoDTO>> persistir(LancamentoDTO lancamentoDto, BindingResult result) {
+	public Response<LancamentoDTO> persistir(LancamentoDTO lancamentoDto) {
 		Response<LancamentoDTO> response = new Response<LancamentoDTO>();
 		
 		Lancamento lancamento;
 		try {
-			lancamento = this.converterDtoParaLancamento(lancamentoDto, result);
+			lancamento = this.converterDtoParaLancamento(lancamentoDto, response);
 		} catch (ParseException e) {
 			lancamento = new Lancamento();
-			result.getAllErrors().add(new ObjectError("lancamento", "Erro de data: " + e.getMessage()));
+			response.getErrors().add("Erro de data: " + e.getMessage());
 		}
 		
-		if(result.hasErrors()) {
-			log.error("Erro validando lançamento: {}", result.getAllErrors());
-			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(response);
+		if(!response.getErrors().isEmpty()) {
+			log.error("Erro validando lançamento: {}", response.getErrors());
+			response.getErrors().add("Erro validando lançamento.");
+			return response;
 		}
 		
 		lancamento = this.lancamentoRepository.save(lancamento);
 		response.setData(this.converterLancamentoParaDto(lancamento));
-		return ResponseEntity.ok(response);
+		return response;
 	}
 
 	@Override
-	public ResponseEntity<Response<String>> remover(Long id) {
+	public Response<String> remover(Long id) {
 		log.info("Excluindo o lançamento ID:{}", id);
 		Response<String> response = new Response<String>();
 		Optional<Lancamento> lancamento = Optional.ofNullable(this.lancamentoRepository.findOne(id));
@@ -104,12 +108,12 @@ public class LancamentoServiceImpl implements LancamentoService {
 		if (!lancamento.isPresent()) {
 			log.info("Erro ao remover lançamento ID: {} por ser inválido.", id);
 			response.getErrors().add("Erro ao remover lançamento. Registro não encontrado para o ID: " + id);
-			return ResponseEntity.badRequest().body(response);
+			return response;
 		}
 		
 		this.lancamentoRepository.delete(id);
 		response.setData("Lancamento removido ID: " + id);
-		return ResponseEntity.ok(response);
+		return response;
 	}
 	
 	/**
@@ -135,7 +139,7 @@ public class LancamentoServiceImpl implements LancamentoService {
 	 * @return Lancamento
 	 * @throws ParseException
 	 */
-	private Lancamento converterDtoParaLancamento(LancamentoDTO lancamentoDto, BindingResult result) throws ParseException {
+	private Lancamento converterDtoParaLancamento(LancamentoDTO lancamentoDto, Response<LancamentoDTO> response) throws ParseException {
 		Lancamento lancamento = new Lancamento();
 		
 		if(lancamentoDto.getId().isPresent()) {
@@ -144,7 +148,7 @@ public class LancamentoServiceImpl implements LancamentoService {
 				lancamento = lanc.get();
 			}
 			else {
-				result.addError(new ObjectError("lancamento", "Lançamento não encontrado."));
+				response.getErrors().add("Lançamento não encontrado.");
 			}
 		}
 		else {
@@ -160,7 +164,7 @@ public class LancamentoServiceImpl implements LancamentoService {
 			lancamento.setTipo(TipoEnum.valueOf(lancamentoDto.getTipo()));
 		}
 		else {
-			result.addError(new ObjectError("tipo", "Tipo inválido."));
+			response.getErrors().add("Tipo inválido.");
 		}
 		return lancamento;
 	}
