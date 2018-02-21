@@ -41,32 +41,38 @@ public class FuncionarioController {
 	@GetMapping(value = "/email/{email}")
 	public ResponseEntity<Response<FuncionarioDTO>> buscarPorEmail(@PathVariable("email") String email) {
 		log.info("Buscando funcionário por Email: {}", email);
-		return funcionarioService.buscarPorEmail(email);
+		return response(funcionarioService.buscarPorEmail(email));
 	}
 	
 	@GetMapping(value = "/cpf/{cpf}")
 	public ResponseEntity<Response<FuncionarioDTO>> buscarPorCpf(@PathVariable("cpf") String cpf) {
 		log.info("Buscando funcionário por CPF: {}", cpf);
-		return funcionarioService.buscarPorCpf(cpf);
+		return response(funcionarioService.buscarPorCpf(cpf));
 	}
 	
 	@GetMapping(value = "/id/{id}")
 	public ResponseEntity<Response<FuncionarioDTO>> buscarPorId(@PathVariable("id") Long id) {
 		log.info("Buscando funcionário por ID: {}", id);
-		return funcionarioService.buscarPorId(id);
+		return response(funcionarioService.buscarPorId(id));
 	}
 	
 	@GetMapping(value = "/idEmpresa/{id}")
 	public ResponseEntity<Response<List<FuncionarioDTO>>> buscarPorEmpresaId(@PathVariable("id") Long id) {
 		log.info("Buscando funcionários por empresa ID: {}", id);
-		return funcionarioService.buscarPorEmpresaId(id);
+		Response<List<FuncionarioDTO>> response = funcionarioService.buscarPorEmpresaId(id);
+		
+		if (!response.getErrors().isEmpty()) {
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		return ResponseEntity.ok(response);
 	}
 	
 	@PostMapping
 	public ResponseEntity<Response<FuncionarioDTO>> inserir(
 			@Valid @RequestBody FuncionarioDTO funcionarioDto, BindingResult result) {
 		log.info("Inserindo funcionário: {}", funcionarioDto.toString());
-		return funcionarioService.persistir(funcionarioDto, result);
+		return response(funcionarioService.persistir(funcionarioDto));
 	}
 	
 	@PutMapping(value = "{id}")
@@ -74,13 +80,27 @@ public class FuncionarioController {
 			@Valid @RequestBody FuncionarioDTO funcionarioDto, BindingResult result) throws NoSuchAlgorithmException {
 		log.info("Atualizando funcionário: {}", funcionarioDto.toString());
 		funcionarioDto.setId(id);
-		return funcionarioService.persistir(funcionarioDto, result);
+		return response(funcionarioService.persistir(funcionarioDto));
 	}
 	
 	@DeleteMapping(value = "{id}")
 	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<Response<String>> remover(@PathVariable("id") Long id) {
 		log.info("Removendo funcionário ID: {}", id);
-		return funcionarioService.remover(id);
+		Response<String> response = funcionarioService.remover(id);
+		
+		if (!response.getErrors().isEmpty()) {
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		return ResponseEntity.ok(response);
+	}
+	
+	private ResponseEntity<Response<FuncionarioDTO>> response(Response<FuncionarioDTO> res){
+		if (!res.getErrors().isEmpty()) {
+			return ResponseEntity.badRequest().body(res);
+		}
+		
+		return ResponseEntity.ok(res);
 	}
 }

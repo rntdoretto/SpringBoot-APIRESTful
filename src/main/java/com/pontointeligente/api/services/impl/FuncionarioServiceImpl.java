@@ -9,10 +9,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.pontointeligente.api.dtos.FuncionarioDTO;
@@ -32,21 +29,21 @@ public class FuncionarioServiceImpl implements FuncionarioService{
 	private FuncionarioRepository funcionarioRepository;
 
 	@Override
-	public ResponseEntity<Response<FuncionarioDTO>> persistir(FuncionarioDTO funcionarioDto, BindingResult result) {
+	public Response<FuncionarioDTO> persistir(FuncionarioDTO funcionarioDto) {
 		Response<FuncionarioDTO> response = new Response<FuncionarioDTO>();
 		
 		if(funcionarioDto.getId() == null) {
-			this.funcionarioIsPresent(funcionarioDto, result);
+			this.funcionarioIsPresent(funcionarioDto, response);
 		}
 		else {
 			Optional<Funcionario> func = Optional.ofNullable(this.funcionarioRepository.findOne(funcionarioDto.getId()));
 			if (func.isPresent()) {
 				if(!func.get().getEmail().equals(funcionarioDto.getEmail()) || !func.get().getCpf().equals(funcionarioDto.getCpf())) {
-					this.funcionarioIsPresent(funcionarioDto, result);
+					this.funcionarioIsPresent(funcionarioDto, response);
 				}
 			}
 			else {
-				result.addError(new ObjectError("funcionario", "Funcionário não encontrado."));
+				response.getErrors().add("Funcionário não encontrado.");
 			}
 		}
 		
@@ -55,24 +52,23 @@ public class FuncionarioServiceImpl implements FuncionarioService{
 			funcionario = this.converterDtoParaFuncionario(funcionarioDto);
 		} catch (NoSuchAlgorithmException e) {
 			funcionario = new Funcionario();
-			result.addError(new ObjectError("funcionario", "Erro ao gerar senha."));
+			response.getErrors().add("Erro ao gerar a senha.");
 		}
 		
-		if (result.hasErrors()) {
-			log.error("Erro ao persistir funcionário. {}", result.getAllErrors());
-			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(response);
+		if (!response.getErrors().isEmpty()) {
+			log.error("Erro ao persistir funcionário. {}", response.getErrors());
+			return response;
 		}
 		
 		log.info("Persistindo funcionário: {}", funcionario);
 		this.funcionarioRepository.save(funcionario);
 		
 		response.setData(this.converterFuncionarioParaDto(funcionario));
-		return ResponseEntity.ok(response);
+		return response;
 	}
 
 	@Override
-	public ResponseEntity<Response<FuncionarioDTO>> buscarPorCpf(String cpf) {
+	public Response<FuncionarioDTO> buscarPorCpf(String cpf) {
 		Response<FuncionarioDTO> response = new Response<FuncionarioDTO>();
 		log.info("Buscando funcionario pelo CPF {}", cpf);
 		Optional<Funcionario> funcionario = Optional.ofNullable(this.funcionarioRepository.findByCpf(cpf));
@@ -80,15 +76,15 @@ public class FuncionarioServiceImpl implements FuncionarioService{
 		if(!funcionario.isPresent()) {
 			log.info("Funcionario não encontrado para o CPF: {}", cpf);
 			response.getErrors().add("Funcionario não encontrado para o CPF: {}" + cpf);
-			return ResponseEntity.badRequest().body(response);
+			return response;
 		}
 		
 		response.setData(this.converterFuncionarioParaDto(funcionario.get()));
-		return ResponseEntity.ok(response);
+		return response;
 	}
 
 	@Override
-	public ResponseEntity<Response<FuncionarioDTO>> buscarPorEmail(String email) {
+	public Response<FuncionarioDTO> buscarPorEmail(String email) {
 		Response<FuncionarioDTO> response = new Response<FuncionarioDTO>();
 		log.info("Buscando funcionario pelo Email {}", email);
 		Optional<Funcionario> funcionario = Optional.ofNullable(this.funcionarioRepository.findByEmail(email));
@@ -96,15 +92,15 @@ public class FuncionarioServiceImpl implements FuncionarioService{
 		if(!funcionario.isPresent()) {
 			log.info("Funcionario não encontrado para o Email: {}", email);
 			response.getErrors().add("Funcionario não encontrado para o Email: {}" + email);
-			return ResponseEntity.badRequest().body(response);
+			return response;
 		}
 		
 		response.setData(this.converterFuncionarioParaDto(funcionario.get()));
-		return ResponseEntity.ok(response);
+		return response;
 	}
 
 	@Override
-	public ResponseEntity<Response<FuncionarioDTO>> buscarPorId(Long id) {
+	public Response<FuncionarioDTO> buscarPorId(Long id) {
 		Response<FuncionarioDTO> response = new Response<FuncionarioDTO>();
 		log.info("Buscando funcionario pelo ID {}", id);
 		Optional<Funcionario> funcionario = Optional.ofNullable(this.funcionarioRepository.findOne(id));
@@ -112,15 +108,15 @@ public class FuncionarioServiceImpl implements FuncionarioService{
 		if(!funcionario.isPresent()) {
 			log.info("Funcionario não encontrado para o ID: {}", id);
 			response.getErrors().add("Funcionario não encontrado para o ID: {}" + id);
-			return ResponseEntity.badRequest().body(response);
+			return response;
 		}
 		
 		response.setData(this.converterFuncionarioParaDto(funcionario.get()));
-		return ResponseEntity.ok(response);
+		return response;
 	}
 	
 	@Override
-	public ResponseEntity<Response<List<FuncionarioDTO>>> buscarPorEmpresaId(Long idEmpresa) {
+	public Response<List<FuncionarioDTO>> buscarPorEmpresaId(Long idEmpresa) {
 		Response<List<FuncionarioDTO>> response = new Response<List<FuncionarioDTO>>();
 		
 		Optional<List<Funcionario>> funcionarios = Optional.ofNullable(this.funcionarioRepository.findByEmpresaId(idEmpresa));
@@ -128,15 +124,15 @@ public class FuncionarioServiceImpl implements FuncionarioService{
 		if(!funcionarios.isPresent()) {
 			log.info("Nenhum funcionario encontrado para a empresa ID: {}", idEmpresa);
 			response.getErrors().add("Funcionario não encontrado para o ID: {}" + idEmpresa);
-			return ResponseEntity.badRequest().body(response);
+			return response;
 		}
 		
 		response.setData(this.converterFuncionariosParaDto(funcionarios.get()));
-		return ResponseEntity.ok(response);
+		return response;
 	}
 	
 	@Override
-	public ResponseEntity<Response<String>> remover(@PathVariable("id") Long id) {
+	public Response<String> remover(@PathVariable("id") Long id) {
 		log.info("Removendo funcionário ID: {}", id);
 		Response<String> response = new Response<String>();
 		Optional<Funcionario> funcionario = Optional.ofNullable(this.funcionarioRepository.findOne(id));
@@ -144,12 +140,12 @@ public class FuncionarioServiceImpl implements FuncionarioService{
 		if(!funcionario.isPresent()) {
 			log.info("Funcionario não encontrado para o ID: {}", id);
 			response.getErrors().add("Funcionario não encontrado para o ID: {}" + id);
-			return ResponseEntity.badRequest().body(response);
+			return response;
 		}
 		
 		this.funcionarioRepository.delete(id);
 		response.setData("Funcionário removido ID: " + id);
-		return ResponseEntity.ok(response);
+		return response;
 	}
 	
 	/**
@@ -217,10 +213,10 @@ public class FuncionarioServiceImpl implements FuncionarioService{
 	 * @param funcionarioDto
 	 * @param result
 	 */
-	private void funcionarioIsPresent(FuncionarioDTO funcionarioDto, BindingResult result) {
+	private void funcionarioIsPresent(FuncionarioDTO funcionarioDto, Response<FuncionarioDTO> response) {
 		Optional<Funcionario> funcionario = Optional.ofNullable(funcionarioRepository.findByCpf(funcionarioDto.getCpf()));
-		funcionario.ifPresent(func -> result.addError(new ObjectError("funcionario", "CPF já existe.")));
+		funcionario.ifPresent(func -> response.getErrors().add("CPF já existe."));
 		funcionario = Optional.ofNullable(funcionarioRepository.findByEmail(funcionarioDto.getEmail()));
-		funcionario.ifPresent(func -> result.addError(new ObjectError("funcionario", "Email já existe.")));
+		funcionario.ifPresent(func -> response.getErrors().add("Email já existe."));
 	}
 }
