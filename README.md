@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/rntdoretto/SpringBootAPIRESTfull.svg?branch=master)](https://travis-ci.org/rntdoretto/SpringBootAPIRESTfull)
+[![Build Status](https://travis-ci.org/rntdoretto/SpringBoot-APIRESTful.svg?branch=master)](https://travis-ci.org/rntdoretto/SpringBoot-APIRESTful)
 
 # SpringBoot APIRESTful
 API RESTfull para sistema de ponto inteligente.
