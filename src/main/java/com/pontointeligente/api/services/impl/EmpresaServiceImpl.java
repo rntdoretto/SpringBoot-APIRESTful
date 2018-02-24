@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.pontointeligente.api.audit.documents.Audit;
+import com.pontointeligente.api.audit.repositories.AuditRepository;
 import com.pontointeligente.api.dtos.EmpresaDTO;
 import com.pontointeligente.api.entities.Empresa;
 import com.pontointeligente.api.repositories.EmpresaRepository;
@@ -23,11 +25,15 @@ public class EmpresaServiceImpl implements EmpresaService {
 
 	@Autowired
 	private EmpresaRepository empresaRepository;
+	
+	@Autowired
+	private AuditRepository auditRepository;
 
 	@Override
 	public Response<List<EmpresaDTO>> buscarTodos() {
+		log.info("Buscando todas empresas.");
+		auditRepository.save(new Audit("PontoInteligente", "10.0.0.1", "Buscando todas empresas."));
 		Response<List<EmpresaDTO>> response = new Response<List<EmpresaDTO>>();
-		log.info("Buscando uma empresas.");
 		Optional<List<Empresa>> empresas = Optional.ofNullable(empresaRepository.findAll());
 
 		if(!empresas.isPresent()) {
@@ -43,8 +49,9 @@ public class EmpresaServiceImpl implements EmpresaService {
 	
 	@Override
 	public Response<EmpresaDTO> buscarPorId(Long id) {
+		log.info("Buscando uma empresa para o ID: {}.", id);
+		auditRepository.save(new Audit("PontoInteligente", "10.0.0.1", "Buscando uma empresa para o ID: " + id));
 		Response<EmpresaDTO> response = new Response<EmpresaDTO>();
-		log.info("Buscando uma empresa para o ID {}.", id);
 		Optional<Empresa> empresa = Optional.ofNullable(empresaRepository.findOne(id));
 
 		if(!empresa.isPresent()) {
@@ -60,8 +67,9 @@ public class EmpresaServiceImpl implements EmpresaService {
 
 	@Override
 	public Response<EmpresaDTO> buscarPorCnpj(String cnpj) {
-		Response<EmpresaDTO> response = new Response<EmpresaDTO>();
 		log.info("Buscando uma empresa para o CNPJ {}.", cnpj);
+		auditRepository.save(new Audit("PontoInteligente", "10.0.0.1", "Buscando uma empresa para o CNPJ: " + cnpj));
+		Response<EmpresaDTO> response = new Response<EmpresaDTO>();
 		Optional<Empresa> empresa = Optional.ofNullable(empresaRepository.findByCnpj(cnpj));
 
 		if(!empresa.isPresent()) {
@@ -76,6 +84,7 @@ public class EmpresaServiceImpl implements EmpresaService {
 
 	@Override
 	public Response<EmpresaDTO> persistir(EmpresaDTO empresaDto) {
+		auditRepository.save(new Audit("PontoInteligente", "10.0.0.1", "Persistindo empresa."));
 		Response<EmpresaDTO> response = new Response<EmpresaDTO>();
 
 		if (empresaDto.getId() == null) {
@@ -109,6 +118,7 @@ public class EmpresaServiceImpl implements EmpresaService {
 	
 	public Response<String> remover(@PathVariable("id") Long id) {
 		log.info("Removendo lançamento ID: {}", id);
+		auditRepository.save(new Audit("PontoInteligente", "10.0.0.1", "Removendo lançamento ID: " + id));
 		Response<String> response = new Response<String>();
 		Optional<Empresa> empresa = Optional.ofNullable(this.empresaRepository.findOne(id));
 		
